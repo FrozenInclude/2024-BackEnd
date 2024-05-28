@@ -18,7 +18,7 @@ import com.example.demo.service.BoardService;
 
 @RestController
 public class BoardController {
-
+    // 과제 수행함
     private final BoardService boardService;
 
     public BoardController(BoardService boardService) {
