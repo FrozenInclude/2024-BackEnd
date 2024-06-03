@@ -35,11 +35,16 @@ public class BoardRepositoryJdbc implements BoardRepository {
 
     @Override
     public Board findById(Long id) {
-        return jdbcTemplate.queryForObject("""
-            SELECT id, name
+        try {
+            return jdbcTemplate.queryForObject("""
+            
+                    SELECT id, name
             FROM board
             WHERE id = ?
             """, boardRowMapper, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Board not found");
+        }
     }
 
     @Override

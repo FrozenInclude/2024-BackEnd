@@ -10,6 +10,8 @@ public interface ArticleRepository {
 
     List<Article> findAllByBoardId(Long boardId);
 
+    List<Article> findAllByMemberId(Long memberId);
+
     Article findById(Long id);
 
     Article insert(Article article);

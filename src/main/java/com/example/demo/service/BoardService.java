@@ -2,6 +2,10 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import com.example.demo.AOPexception.Exception.DeleteExistedExcepton;
+import com.example.demo.AOPexception.Exception.GetNotFoundException;
+import com.example.demo.repository.ArticleRepository;
+import com.example.demo.repository.ArticleRepositoryJdbc;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +20,11 @@ import com.example.demo.repository.BoardRepository;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final ArticleRepository articleRepository;
 
-    public BoardService(BoardRepository boardRepository) {
+    public BoardService(BoardRepository boardRepository,ArticleRepository articleRepository) {
         this.boardRepository = boardRepository;
+        this.articleRepository=articleRepository;
     }
 
     public List<BoardResponse> getBoards() {
@@ -28,8 +34,12 @@ public class BoardService {
     }
 
     public BoardResponse getBoardById(Long id) {
-        Board board = boardRepository.findById(id);
-        return BoardResponse.from(board);
+       try {
+           Board board = boardRepository.findById(id);
+           return BoardResponse.from(board);
+       }catch (RuntimeException e) {
+           throw new GetNotFoundException(e.getMessage());
+       }
     }
 
     @Transactional
@@ -41,6 +51,8 @@ public class BoardService {
 
     @Transactional
     public void deleteBoard(Long id) {
+        if(!articleRepository.findAllByBoardId(id).isEmpty())
+            throw new DeleteExistedExcepton("Articles exist in board!");
         boardRepository.deleteById(id);
     }
 

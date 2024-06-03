@@ -2,5 +2,5 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/bcsd # 본인의 환경에 맞게 수정한다.
     username: root # 본인의 환경에 맞게 수정한다.
-    password: qwer1234 # 본인의 환경에 맞게 수정한다.
+    password: gkrdlsdlelql!! # 본인의 환경에 맞게 수정한다.
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -10,6 +10,8 @@ public interface MemberRepository {
 
     Member findById(Long id);
 
+    Member findByEmail(String email);
+
     Member insert(Member member);
 
     Member update(Member member);
