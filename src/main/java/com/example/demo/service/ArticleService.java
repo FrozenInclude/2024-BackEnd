@@ -75,10 +75,10 @@ public class ArticleService {
                 article.getTitle() == null || article.getContent() == null) {
             throw new PostIllegalArgumemtException("NULL field existed");
         }
-        Article saved = articleRepository.insert(article);
-        try {
-            Member member = memberRepository.findById(saved.getAuthorId());
-            Board board = boardRepository.findById(saved.getBoardId());
+        try{
+            Member member = memberRepository.findById(article.getAuthorId());
+            Board board = boardRepository.findById(article.getBoardId());
+            Article saved = articleRepository.insert(article);
             return ArticleResponse.of(saved, member, board);
         } catch (RuntimeException e) {
             throw new PostNotFoundException(e.getMessage());
@@ -89,10 +89,10 @@ public class ArticleService {
     public ArticleResponse update(Long id, ArticleUpdateRequest request) {
         try {
             Article article = articleRepository.findById(id);
+            Board board = boardRepository.findById(request.boardId());
             article.update(request.boardId(), request.title(), request.description());
             Article updated = articleRepository.update(article);
             Member member = memberRepository.findById(updated.getAuthorId());
-            Board board = boardRepository.findById(article.getBoardId());
             return ArticleResponse.of(article, member, board);
         } catch (RuntimeException e) {
             throw new PutNotFoundException(e.getMessage());

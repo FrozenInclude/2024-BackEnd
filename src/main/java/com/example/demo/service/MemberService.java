@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.demo.AOPexception.Exception.DeleteExistedExcepton;
 import com.example.demo.AOPexception.Exception.GetNotFoundException;
+import com.example.demo.AOPexception.Exception.PostIllegalArgumemtException;
 import com.example.demo.AOPexception.Exception.PutDuplicatedException;
 import com.example.demo.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,9 @@ public class MemberService {
 
     @Transactional
     public MemberResponse create(MemberCreateRequest request) {
+        if (request.name() == null || request.email() == null || request.password() == null) {
+            throw new PostIllegalArgumemtException("NULL field existed");
+        }
         Member member = memberRepository.insert(
                 new Member(request.name(), request.email(), request.password())
         );
@@ -55,7 +59,7 @@ public class MemberService {
     public void delete(Long id) {
         if (!articleRepository.findAllByMemberId(id).isEmpty())
             throw new DeleteExistedExcepton("one above articles existed written by this member");
-            memberRepository.deleteById(id);
+        memberRepository.deleteById(id);
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.demo.AOPexception.Exception.DeleteExistedExcepton;
 import com.example.demo.AOPexception.Exception.GetNotFoundException;
+import com.example.demo.AOPexception.Exception.PostIllegalArgumemtException;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.repository.ArticleRepositoryJdbc;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,9 @@ public class BoardService {
 
     @Transactional
     public BoardResponse createBoard(BoardCreateRequest request) {
+        if (request.name() == null ) {
+            throw new PostIllegalArgumemtException("NULL field existed");
+        }
         Board board = new Board(request.name());
         Board saved = boardRepository.insert(board);
         return BoardResponse.from(saved);
