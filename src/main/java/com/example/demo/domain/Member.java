@@ -1,7 +1,12 @@
 package com.example.demo.domain;
 
-public class Member {
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "member")
+public class Member {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;
@@ -18,6 +23,10 @@ public class Member {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public Member() {
+
     }
 
     public void update(String name, String email) {

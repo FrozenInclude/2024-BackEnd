@@ -2,11 +2,11 @@ package com.example.demo.AOPexception;
 
 import com.example.demo.AOPexception.Exception.*;
 import org.apache.coyote.BadRequestException;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 @RestControllerAdvice
 public class ExceptHandler {
     @ExceptionHandler

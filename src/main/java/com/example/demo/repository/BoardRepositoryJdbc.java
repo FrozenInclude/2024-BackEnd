@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.domain.Board;
 
-@Repository
 public class BoardRepositoryJdbc implements BoardRepository {
 
     private final JdbcTemplate jdbcTemplate;
