@@ -30,7 +30,7 @@ public class MemberService {
 
     public MemberResponse getById(Long id) {
         try {
-            Member member = memberRepository.findById(id);
+            Member member = memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);;
             return MemberResponse.from(member);
         } catch (RuntimeException e) {
             throw new GetNotFoundException(e.getMessage());
@@ -49,7 +49,7 @@ public class MemberService {
         if (request.name() == null || request.email() == null || request.password() == null) {
             throw new PostIllegalArgumemtException("NULL field existed");
         }
-        Member member = memberRepository.insert(
+        Member member = memberRepository.save(
                 new Member(request.name(), request.email(), request.password())
         );
         return MemberResponse.from(member);
@@ -57,19 +57,19 @@ public class MemberService {
 
     @Transactional
     public void delete(Long id) {
-        if (!articleRepository.findAllByMemberId(id).isEmpty())
+        if (!articleRepository.findAllByAuthorId(id).isEmpty())
             throw new DeleteExistedExcepton("one above articles existed written by this member");
         memberRepository.deleteById(id);
     }
 
     @Transactional
     public MemberResponse update(Long id, MemberUpdateRequest request) {
-        Member member = memberRepository.findById(id);
+        Member member = memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);;
         try {
             memberRepository.findByEmail(request.email());
         } catch (RuntimeException e) {
             member.update(request.name(), request.email());
-            memberRepository.update(member);
+            memberRepository.save(member);
             return MemberResponse.from(member);
         }
         throw new PutDuplicatedException("already used email");

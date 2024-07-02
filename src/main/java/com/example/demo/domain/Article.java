@@ -11,8 +11,11 @@ public class Article {
     private Long id;
     @Column(name = "author_id")
     private Long authorId;
-    @Column(name = "board_id")
-    private Long boardId;
+
+    @ManyToOne
+    @JoinColumn(name="board_id")
+    private Board board;
+
     private String title;
     private String content;
     @Column(name = "created_date")
@@ -23,7 +26,7 @@ public class Article {
     public Article(
         Long id,
         Long authorId,
-        Long boardId,
+        Board board,
         String title,
         String content,
         LocalDateTime createdAt,
@@ -31,17 +34,17 @@ public class Article {
     ) {
         this.id = id;
         this.authorId = authorId;
-        this.boardId = boardId;
+        this.board = board;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
 
-    public Article(Long authorId, Long boardId, String title, String content) {
+    public Article(Long authorId, Board board, String title, String content) {
         this.id = null;
         this.authorId = authorId;
-        this.boardId = boardId;
+        this.board = board;
         this.title = title;
         this.content = content;
         this.createdAt = LocalDateTime.now();
@@ -53,8 +56,8 @@ public class Article {
     }
 
 
-    public void update(Long boardId, String title, String description) {
-        this.boardId = boardId;
+    public void update(Board board, String title, String description) {
+        this.board = board;
         this.title = title;
         this.content = description;
         this.modifiedAt = LocalDateTime.now();
@@ -77,7 +80,7 @@ public class Article {
     }
 
     public Long getBoardId() {
-        return boardId;
+        return board.getId();
     }
 
     public String getTitle() {

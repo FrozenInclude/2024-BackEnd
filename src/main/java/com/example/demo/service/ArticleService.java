@@ -39,9 +39,15 @@ public class ArticleService {
 
     public ArticleResponse getById(Long id) {
         try {
-            Article article = articleRepository.findById(id);
-            Member member = memberRepository.findById(article.getAuthorId());
-            Board board = boardRepository.findById(article.getBoardId());
+            Article article = articleRepository.findById(id)
+                    .orElseThrow(IllegalArgumentException::new);
+            ;
+            Member member = memberRepository.findById(article.getAuthorId())
+                    .orElseThrow(IllegalArgumentException::new);
+            ;
+            Board board = boardRepository.findById(article.getBoardId())
+                    .orElseThrow(IllegalArgumentException::new);
+            ;
             return ArticleResponse.of(article, member, board);
         } catch (RuntimeException e) {
             throw new GetNotFoundException(e.getMessage());
@@ -50,11 +56,15 @@ public class ArticleService {
 
     public List<ArticleResponse> getByBoardId(Long boardId) {
         try {
-            List<Article> articles = articleRepository.findAllByBoardId(boardId);
+            List<Article> articles = articleRepository.findAllByBoard_Id(boardId);
             return articles.stream()
                     .map(article -> {
-                        Member member = memberRepository.findById(article.getAuthorId());
-                        Board board = boardRepository.findById(article.getBoardId());
+                        Member member = memberRepository.findById(article.getAuthorId())
+                                .orElseThrow(IllegalArgumentException::new);
+                        ;
+                        Board board = boardRepository.findById(article.getBoardId())
+                                .orElseThrow(IllegalArgumentException::new);
+                        ;
                         return ArticleResponse.of(article, member, board);
                     })
                     .toList();
@@ -67,7 +77,7 @@ public class ArticleService {
     public ArticleResponse create(ArticleCreateRequest request) {
         Article article = new Article(
                 request.authorId(),
-                request.boardId(),
+                boardRepository.getReferenceById(request.boardId()),
                 request.title(),
                 request.description()
         );
@@ -75,10 +85,14 @@ public class ArticleService {
                 article.getTitle() == null || article.getContent() == null) {
             throw new PostIllegalArgumemtException("NULL field existed");
         }
-        try{
-            Member member = memberRepository.findById(article.getAuthorId());
-            Board board = boardRepository.findById(article.getBoardId());
-            Article saved = articleRepository.insert(article);
+        try {
+            Member member = memberRepository.findById(article.getAuthorId())
+                    .orElseThrow(IllegalArgumentException::new);
+            ;
+            Board board = boardRepository.findById(article.getBoardId())
+                    .orElseThrow(IllegalArgumentException::new);
+            ;
+            Article saved = articleRepository.save(article);
             return ArticleResponse.of(saved, member, board);
         } catch (RuntimeException e) {
             throw new PostNotFoundException(e.getMessage());
@@ -88,11 +102,17 @@ public class ArticleService {
     @Transactional
     public ArticleResponse update(Long id, ArticleUpdateRequest request) {
         try {
-            Article article = articleRepository.findById(id);
-            Board board = boardRepository.findById(request.boardId());
-            article.update(request.boardId(), request.title(), request.description());
-            Article updated = articleRepository.update(article);
-            Member member = memberRepository.findById(updated.getAuthorId());
+            Article article = articleRepository.findById(id)
+                    .orElseThrow(IllegalArgumentException::new);
+            ;
+            Board board = boardRepository.findById(request.boardId())
+                    .orElseThrow(IllegalArgumentException::new);
+            ;
+            article.update(boardRepository.getReferenceById(request.boardId()), request.title(), request.description());
+            Article updated = articleRepository.save(article);
+            Member member = memberRepository.findById(updated.getAuthorId())
+                    .orElseThrow(IllegalArgumentException::new);
+            ;
             return ArticleResponse.of(article, member, board);
         } catch (RuntimeException e) {
             throw new PutNotFoundException(e.getMessage());
