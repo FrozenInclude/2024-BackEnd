@@ -5,9 +5,13 @@ import java.util.List;
 import com.example.demo.controller.dto.request.MemberLoginRequest;
 import com.example.demo.domain.Member;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,24 +42,25 @@ public class MemberController {
     }
 
     @PostMapping("/members/login")
-    public void login(
+    public ResponseEntity<String> login(
             @RequestBody MemberLoginRequest request,
-            HttpSession session,
-            HttpServletResponse response
-    ) throws IOException {
+            HttpSession session
+    ) {
         Member existingUser = (Member) session.getAttribute("loginUser");
         if (existingUser != null) {
-            response.sendRedirect("/members/info");
-            return;
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, "/members/info")
+                    .build();
         }
+
         Member user = memberService.login(request);
         if (user == null) {
-            response.getWriter().write("로그인 아이디 또는 비밀번호가 틀렸습니다.");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("로그인 아이디 또는 비밀번호가 틀렸습니다.");
         }
+
         session.setAttribute("loginUser", user);
-        response.getWriter().write(String.format("loginId : %s login success!", user.getEmail()));
+        return ResponseEntity.ok(String.format("loginId : %s login success!", user.getEmail()));
     }
 
     @GetMapping("/members/info")
