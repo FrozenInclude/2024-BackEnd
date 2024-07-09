@@ -54,8 +54,8 @@ public class BoardService {
 
     @Transactional
     public void deleteBoard(Long id) {
-        if(!articleRepository.findAllByBoard_Id(id).isEmpty())
-            throw new DeleteExistedExcepton("Articles exist in board!");
+        //if(!articleRepository.findAllByBoard_Id(id).isEmpty())
+            //throw new DeleteExistedExcepton("Articles exist in board!");
         boardRepository.deleteById(id);
     }
 

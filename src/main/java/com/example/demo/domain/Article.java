@@ -17,9 +17,12 @@ public class Article {
     private Board board;
 
     private String title;
+
     private String content;
+
     @Column(name = "created_date")
     private LocalDateTime createdAt;
+
     @Column(name = "modified_date")
     private LocalDateTime modifiedAt;
 
