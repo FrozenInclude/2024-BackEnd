@@ -1,11 +1,5 @@
 ## API Documentation
 
-### Base URL
-
-```
-http://localhost:8080
-```
-
 ### Endpoints
 
 | Method | Endpoint       | Description           | Parameters          | Headers                        | Body                                                              |
